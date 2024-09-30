@@ -1,8 +1,5 @@
 'use strict';
-const {
-  Model,
-  Op // Ensure to import Op for Sequelize operators
-} = require('sequelize');
+const { Model, Op } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
@@ -51,9 +48,8 @@ module.exports = (sequelize, DataTypes) => {
       return await Todo.findAll({
         where: {
           dueDate: {
-            [Op.lt]: today, // Using Op.lt for "less than" comparison
+            [Op.lt]: today // Using Op.lt for "less than" comparison
           }
-          // No completed filter here, to return all overdue tasks
         }
       });
     }
@@ -69,7 +65,6 @@ module.exports = (sequelize, DataTypes) => {
             [Op.gte]: startOfToday, // Using Op.gte for "greater than or equal to"
             [Op.lt]: endOfToday // Using Op.lt for "less than"
           }
-          // No completed filter here, to return all tasks due today
         }
       });
     }
@@ -80,9 +75,8 @@ module.exports = (sequelize, DataTypes) => {
       return await Todo.findAll({
         where: {
           dueDate: {
-            [Op.gt]: today, // Using Op.gt for "greater than" comparison
+            [Op.gt]: today // Using Op.gt for "greater than" comparison
           }
-          // No completed filter here, to return all future tasks
         }
       });
     }
@@ -102,18 +96,25 @@ module.exports = (sequelize, DataTypes) => {
     // Method to display a task in a string format
     displayableString() {
       const today = new Date();
-      const isToday = this.dueDate.toISOString().slice(0, 10) === today.toISOString().slice(0, 10);
+      const dueDateObject = new Date(this.dueDate); // Ensure dueDate is a Date object
+      const isToday = dueDateObject.toISOString().slice(0, 10) === today.toISOString().slice(0, 10);
       let checkbox = this.completed ? "[x]" : "[ ]"; // Determine if the task is completed
 
       // Format displayable string based on completion and due date
-      if (this.completed && this.dueDate < today) {
-        return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`; // Completed past-due tasks show date
-      } else if (!this.completed && isToday) {
-        return `${this.id}. ${checkbox} ${this.title}`; // Incomplete tasks due today do not show date
-      } else if (this.completed && isToday) {
-        return `${this.id}. ${checkbox} ${this.title}`; // Completed tasks due today do not show date
+      if (this.completed) {
+        if (dueDateObject < today) {
+          return `${this.id}. ${checkbox} ${this.title} ${dueDateObject.toISOString().slice(0, 10)}`; // Completed past-due tasks show date
+        } else if (isToday) {
+          return `${this.id}. ${checkbox} ${this.title}`; // Completed tasks due today do not show date
+        } else {
+          return `${this.id}. ${checkbox} ${this.title} ${dueDateObject.toISOString().slice(0, 10)}`; // Completed tasks due in the future show date
+        }
       } else {
-        return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`; // All other cases show date
+        if (isToday) {
+          return `${this.id}. ${checkbox} ${this.title}`; // Incomplete tasks due today do not show date
+        } else {
+          return `${this.id}. ${checkbox} ${this.title} ${dueDateObject.toISOString().slice(0, 10)}`; // Incomplete tasks due in the future show date
+        }
       }
     }
   }
