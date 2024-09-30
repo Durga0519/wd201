@@ -102,20 +102,25 @@ module.exports = (sequelize, DataTypes) => {
   
       // Debugging logs
       console.log(`ID: ${this.id}, Title: ${this.title}, Due Date: ${dueDateObject.toISOString().slice(0, 10)}, Is Today: ${isToday}`);
-      
+  
       // Format displayable string based on completion and due date
       if (this.completed) {
-          // For completed tasks, just return the title
-          return `${this.id}. ${checkbox} ${this.title}`; 
+          // For completed tasks (do not show date if due today)
+          if (isToday || dueDateObject < today) {
+              return `${this.id}. ${checkbox} ${this.title}`; // Completed tasks due today or past due do not show date
+          } else {
+              return `${this.id}. ${checkbox} ${this.title} ${dueDateObject.toISOString().slice(0, 10)}`; // Completed tasks due in the future show date
+          }
       } else {
           // For incomplete tasks
           if (isToday) {
-              return `${this.id}. ${checkbox} ${this.title}`; // Incomplete tasks due today
+              return `${this.id}. ${checkbox} ${this.title}`; // Incomplete tasks due today do not show date
           } else {
-              return `${this.id}. ${checkbox} ${this.title} ${dueDateObject.toISOString().slice(0, 10)}`;
+              return `${this.id}. ${checkbox} ${this.title} ${dueDateObject.toISOString().slice(0, 10)}`; // Incomplete tasks due in the future show date
           }
       }
   }  
+  
   }
 
   // Initialize the Todo model with fields and configurations
