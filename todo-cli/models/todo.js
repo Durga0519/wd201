@@ -52,8 +52,8 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           dueDate: {
             [Op.lt]: today, // Using Op.lt for "less than" comparison
-          },
-          completed: false // Only select tasks that are not completed
+          }
+          // No completed filter here, to return all overdue tasks
         }
       });
     }
@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
             [Op.gte]: startOfToday, // Using Op.gte for "greater than or equal to"
             [Op.lt]: endOfToday // Using Op.lt for "less than"
           }
-          // Optionally include completed tasks if needed
+          // No completed filter here, to return all tasks due today
         }
       });
     }
@@ -82,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.gt]: today, // Using Op.gt for "greater than" comparison
           }
-          // Optionally include completed tasks if needed
+          // No completed filter here, to return all future tasks
         }
       });
     }
@@ -101,8 +101,20 @@ module.exports = (sequelize, DataTypes) => {
 
     // Method to display a task in a string format
     displayableString() {
+      const today = new Date();
+      const isToday = this.dueDate.toISOString().slice(0, 10) === today.toISOString().slice(0, 10);
       let checkbox = this.completed ? "[x]" : "[ ]"; // Determine if the task is completed
-      return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`; // Format the string
+
+      // Format displayable string based on completion and due date
+      if (this.completed && this.dueDate < today) {
+        return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`; // Completed past-due tasks show date
+      } else if (!this.completed && isToday) {
+        return `${this.id}. ${checkbox} ${this.title}`; // Incomplete tasks due today do not show date
+      } else if (this.completed && isToday) {
+        return `${this.id}. ${checkbox} ${this.title}`; // Completed tasks due today do not show date
+      } else {
+        return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`; // All other cases show date
+      }
     }
   }
 
