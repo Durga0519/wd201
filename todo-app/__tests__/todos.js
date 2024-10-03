@@ -32,7 +32,7 @@ describe("Todo test suite", () => {
         expect(parsedResponse.id).toBeDefined();
     });
 
-    test("Mark a todo as complete", async () => {
+    test("Marks a todo with the given ID as complete", async () => {
         const response = await agent.post('/todos').send({
             title: "Buy milk",
             dueDate: new Date().toISOString(),
