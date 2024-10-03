@@ -13,11 +13,11 @@ app.get('/', function (request, response) {
 app.get("/todos", async function (_request, response) {
     console.log("Processing list of all Todos ...");
     try {
-        const todos = await Todo.findAll(); // Fetching all Todos from the database
-        return response.json(todos); // Respond with the list of todos
+        const todos = await Todo.findAll(); 
+        return response.json(todos); 
     } catch (error) {
         console.log(error);
-        return response.status(422).json(error); // Handle error if something goes wrong
+        return response.status(422).json(error); 
     }
 });
 
@@ -57,7 +57,7 @@ app.get("/todos/:id", async function (request, response) {
         if (todo) {
             return response.json(todo);
         } else {
-            return response.status(404).json({ message: "Todo not found" }); // Handle case where todo is not found
+            return response.status(404).json({ message: "Todo not found" }); 
         }
     } catch (error) {
         console.log(error);
