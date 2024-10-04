@@ -13,18 +13,18 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static addTodo({ title, dueDate }) {
-      return this.create({ title: title, dueDate: dueDate, complete: false });
+      return this.create({ title: title, dueDate: dueDate, completed: false });
     }
 
     markAsCompleted() {
-      return this.update({ complete: true });
+      return this.update({ completed: true });
     }
   }
   Todo.init(
     {
       title: DataTypes.STRING,
       dueDate: DataTypes.DATEONLY,
-      complete: DataTypes.BOOLEAN,
+      completed: DataTypes.BOOLEAN,
     },
     {
       sequelize,

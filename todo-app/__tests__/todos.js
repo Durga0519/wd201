@@ -22,7 +22,7 @@ describe("Todo test suite", () => {
         const response = await agent.post('/todos').send({
             'title': "Buy milk",
             dueDate: new Date().toISOString(),
-            complete: false
+            completed: false
         });
 
         expect(response.status).toBe(200);  // Check for successful response
@@ -36,23 +36,23 @@ describe("Todo test suite", () => {
         const response = await agent.post('/todos').send({
             title: "Buy milk",
             dueDate: new Date().toISOString(),
-            complete: false
+            completed: false
         });
         const parsedResponse = JSON.parse(response.text);
         const todoID = parsedResponse.id;
 
-        expect(parsedResponse.complete).toBe(false);
+        expect(parsedResponse.completed).toBe(false);
 
         const markCompleteResponse = await agent.put(`/todos/${todoID}/markAsCompleted`).send();
         const parsedUpdatedResponse = JSON.parse(markCompleteResponse.text);
-        expect(parsedUpdatedResponse.complete).toBe(true);
+        expect(parsedUpdatedResponse.completed).toBe(true);
     });
 
     test("Get all todos", async () => {
         await agent.post('/todos').send({
             'title': "Walk the dog",
             dueDate: new Date().toISOString(),
-            complete: false
+            completed: false
         });
         
         const response = await agent.get('/todos'); // Get all todos
@@ -68,7 +68,7 @@ describe("Todo test suite", () => {
         const response = await agent.post('/todos').send({
             'title': "Do the laundry",
             dueDate: new Date().toISOString(),
-            complete: false
+            completed: false
         });
         const parsedResponse = JSON.parse(response.text);
         const todoID = parsedResponse.id;
