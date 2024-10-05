@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start":"nodemon -e js,ejs",
+    "start": "nodemon -e js,ejs",
     "start:prod": "node index.js",
     "pretest": "cross-env NODE_ENV=test npx sequelize-cli db:drop && cross-env NODE_ENV=test npx sequelize-cli db:create",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles",
@@ -25,6 +25,7 @@
   "dependencies": {
     "ejs": "^3.1.10",
     "express": "^4.21.0",
+    "pg": "^8.13.0",
     "sequelize": "^6.37.3",
     "sequelize-cli": "^6.6.2"
   },
