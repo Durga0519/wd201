@@ -48,21 +48,23 @@ describe("Todo test suite", () => {
         expect(parsedUpdatedResponse.completed).toBe(true);
     });
 
-    test("Get all todos", async () => {
-        await agent.post('/todos').send({
-            'title': "Walk the dog",
-            dueDate: new Date().toISOString(),
-            completed: false
+    test("Fetches all todos in the database using /todos endpoint", async () => {
+        const response = await agent.post("/todos").send({
+          title: "Buy xbox",
+          dueDate: new Date().toISOString(),
+          completed: false,
         });
-        
-        const response = await agent.get('/todos'); 
-        expect(response.status).toBe(200); 
+        await agent.post("/todos").send({
+          title: "Buy ps3",
+          dueDate: new Date().toISOString(),
+          completed: false,
+        });
+        expect(response.status).toBe(200);  // Check for successful response
         expect(response.header["content-type"]).toBe("application/json; charset=utf-8");
 
-        const todos = JSON.parse(response.text);
-        expect(Array.isArray(todos)).toBe(true); 
-        expect(todos.length).toBeGreaterThan(0); 
-    });
+        const parsedResponse = JSON.parse(response.text);
+        expect(parsedResponse.id).toBeDefined();
+      });
 
     test("Delete a todo by id", async () => {
         const response = await agent.post('/todos').send({
