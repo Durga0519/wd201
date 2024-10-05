@@ -55,13 +55,13 @@ describe("Todo test suite", () => {
             completed: false
         });
         
-        const response = await agent.get('/todos'); // Get all todos
-        expect(response.status).toBe(200); // Check for successful response
+        const response = await agent.get('/todos'); 
+        expect(response.status).toBe(200); 
         expect(response.header["content-type"]).toBe("application/json; charset=utf-8");
 
         const todos = JSON.parse(response.text);
-        expect(Array.isArray(todos)).toBe(true); // Ensure the response is an array
-        expect(todos.length).toBeGreaterThan(0); // Check that there are todos in the response
+        expect(Array.isArray(todos)).toBe(true); 
+        expect(todos.length).toBeGreaterThan(0); 
     });
 
     test("Delete a todo by id", async () => {
