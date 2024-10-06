@@ -2,102 +2,109 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const path=require("path");
+const path = require("path");
 const { Todo } = require("./models");
+
+// Middleware to parse JSON request body
 app.use(bodyParser.json());
 
-//Set EJS as view update
-
+// Set EJS as the templating engine
 app.set("view engine", "ejs");
 
+// Serve static files from the "public" directory (e.g., CSS, JS)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route to render the index page and display todos
 app.get("/", async (request, response) => {
-    const allTodos = await Todo.getTodos();
-    if (request.accepts("html")){
-        response.render('index', {
-            allTodos
-        });
-    } else{
-        response.json({
-            allTodos
-        });
-    }
-});
-
-app.use(express.static(path.join(__dirname, 'public')))
-
-app.get('/todos', function (request, response) {
-    response.send('Todo list');
-});
-
-// Get all todos
-app.get("/todos", async function (_request, response) {
-    console.log("Processing list of all Todos ...");
     try {
-        const todos = await Todo.findAll(); 
-        return response.json(todos); 
+        const allTodos = await Todo.getTodos(); // Fetch all todos from the database
+
+        if (request.accepts("html")) {
+            // If the client accepts HTML, render the index page with todos
+            response.render('index', {
+                allTodos
+            });
+        } else {
+            // Otherwise, respond with JSON data (e.g., for API clients)
+            response.json({
+                allTodos
+            });
+        }
     } catch (error) {
-        console.log(error);
-        return response.status(422).json(error); 
+        console.error("Error fetching todos:", error);
+        response.status(500).send("Error loading todos");
     }
 });
 
-// Create a new todo
+// API route to get all todos (in JSON format)
+app.get("/todos", async function (_request, response) {
+    try {
+        const todos = await Todo.findAll(); // Fetch all todos
+        return response.json(todos); // Return todos as JSON
+    } catch (error) {
+        console.error(error);
+        return response.status(422).json(error); // Return 422 error if something goes wrong
+    }
+});
+
+// API route to create a new todo
 app.post("/todos", async (request, response) => {
-    console.log("Creating a todo", request.body);
     try {
         const todo = await Todo.addTodo({
-            title: request.body.title,
-            dueDate: request.body.dueDate,
-            complete: false
+            title: request.body.title, // Todo title from the request body
+            dueDate: request.body.dueDate, // Due date from the request body
+            complete: false // Default completed status to false
         });
-        return response.json(todo);
+        return response.json(todo); // Return the created todo as JSON
     } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
+        console.error(error);
+        return response.status(422).json(error); // Return 422 error if creation fails
     }
 });
 
-// Mark todo as completed
+// API route to mark a todo as completed
 app.put("/todos/:id/markAsCompleted", async (request, response) => {
-    console.log("We have to update a todo with ID:", request.params.id);
-    const todo = await Todo.findByPk(request.params.id);
     try {
-        const updatedTodo = await todo.markAsCompleted();
-        return response.json(updatedTodo);
-    } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
-    }
-});
-
-// Get a specific todo by ID
-app.get("/todos/:id", async function (request, response) {
-    try {
-        const todo = await Todo.findByPk(request.params.id);
+        const todo = await Todo.findByPk(request.params.id); // Find the todo by its ID
         if (todo) {
-            return response.json(todo);
+            const updatedTodo = await todo.markAsCompleted(); // Mark the todo as completed
+            return response.json(updatedTodo); // Return the updated todo as JSON
         } else {
-            return response.status(404).json({ message: "Todo not found" }); 
+            return response.status(404).json({ message: "Todo not found" }); // 404 if todo doesn't exist
         }
     } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
+        console.error(error);
+        return response.status(422).json(error); // Return 422 error if update fails
     }
 });
 
-// Delete a todo by ID
-app.delete("/todos/:id", async (request, response) => {
-    console.log("We have to delete a Todo with ID: ", request.params.id);
+// API route to get a specific todo by its ID
+app.get("/todos/:id", async (request, response) => {
     try {
-        const deleted = await Todo.destroy({ where: { id: request.params.id } }); // Deleting todo from the database
-        if (deleted) {
-            return response.send(true); // Respond with true if deletion was successful
+        const todo = await Todo.findByPk(request.params.id); // Find the todo by its ID
+        if (todo) {
+            return response.json(todo); // Return the found todo as JSON
         } else {
-            return response.send(false); // Respond with false if todo was not found
+            return response.status(404).json({ message: "Todo not found" }); // Return 404 if no todo found
         }
     } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
+        console.error(error);
+        return response.status(422).json(error); // Return 422 error if something goes wrong
+    }
+});
+
+// API route to delete a todo by its ID
+app.delete("/todos/:id", async (request, response) => {
+    try {
+        const deleted = await Todo.destroy({ where: { id: request.params.id } }); // Delete the todo by ID
+        if (deleted) {
+            return response.send(true); // Return true if deletion was successful
+        } else {
+            return response.send(false); // Return false if todo was not found
+        }
+    } catch (error) {
+        console.error(error);
+        return response.status(422).json(error); // Return 422 error if deletion fails
     }
 });
 
