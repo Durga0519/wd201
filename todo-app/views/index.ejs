@@ -1,25 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        My To-Do Application
-    </title>
+    <title>My To-Do Application</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="./css/styles.css" rel="stylesheet"/>
+    <link href="./css/styles.css" rel="stylesheet" />
 </head>
+
 <body>
     <%- include('header.ejs') %>
-  <table>
-        <% for(var i = 0; i < allTodos.length; i++) { %>
-            <tr>
-                <td>
-                    <%=allTodos[i].title %>
-                </td> 
-             </tr>
-        <% } %>
+
+    <h1 class="text-center my-4">Todo List</h1>
+    
+    <!-- Table to display todos -->
+    <table class="min-w-full bg-white border border-gray-200">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="py-2 px-4 border">ID</th>
+                <th class="py-2 px-4 border">Title</th>
+                <th class="py-2 px-4 border">Due Date</th>
+                <th class="py-2 px-4 border">Completed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (var i = 0; i < allTodos.length; i++) { %>
+                <tr class="hover:bg-gray-100">
+                    <td class="py-2 px-4 border"><%= allTodos[i].id %></td>
+                    <td class="py-2 px-4 border"><%= allTodos[i].title %></td>
+                    <td class="py-2 px-4 border"><%= allTodos[i].dueDate %></td>
+                    <td class="py-2 px-4 border"><%= allTodos[i].complete ? "Yes" : "No" %></td>
+                </tr>
+            <% } %>
+        </tbody>
     </table>
+
     <%- include('footer.ejs') %>
 </body>
+
 </html>
