@@ -2,29 +2,39 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const path=require("path");
+const path = require("path");
 const { Todo } = require("./models");
-app.use(bodyParser.json());
 
-//Set EJS as view update
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.set("view engine", "ejs");
 
 app.get("/", async (request, response) => {
-    const allTodos = await Todo.getTodos();
-    if (request.accepts("html")){
+    const allTodos = await Todo.getTodos(); // Assuming your getTodos method fetches all to-dos.
+    const today = new Date();
+
+    // Categorizing the todos
+    const overdueTodos = allTodos.filter(todo => new Date(todo.dueDate) < today && !todo.completed);
+    const dueTodayTodos = allTodos.filter(todo => new Date(todo.dueDate).toDateString() === today.toDateString());
+    const dueLaterTodos = allTodos.filter(todo => new Date(todo.dueDate) > today);
+
+    if (request.accepts("html")) {
         response.render('index', {
-            allTodos
+            overdueTodos,
+            dueTodayTodos,
+            dueLaterTodos
         });
-    } else{
+    } else {
         response.json({
-            allTodos
+            overdueTodos,
+            dueTodayTodos,
+            dueLaterTodos
         });
     }
 });
 
-app.use(express.static(path.join(__dirname, 'public')))
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.get('/todos', function (request, response) {
     response.send('Todo list');
 });

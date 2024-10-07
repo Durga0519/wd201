@@ -1,18 +1,41 @@
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Description</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% todos.forEach(todo => { %>
-            <tr>
-                <td><%= todo.id %></td>
-                <td><%= todo.description %></td>
-                <td><%= todo.completed ? 'Completed' : 'Incomplete' %></td>
-            </tr>
-        <% }) %>
-    </tbody>
-</table>
+<h5>Overdue (<span id="count-overdue"><%= overdueTodos.length %></span>)</h5>
+<ul>
+    <% overdueTodos.forEach(function(todo) { %>
+        <li class="Todo-Item">
+            <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-red-50">
+                <input type="checkbox" class="w-4 h-4 text-blue-600 bg-green-100 rounded border-gray-300" />
+                <label class="ml-2 text-sm text-gray-600 cursor-pointer">
+                    <%= todo.title %> (Due on <%= todo.dueDate %>)
+                </label>
+            </div>
+        </li>
+    <% }); %>
+</ul>
+
+<h5>Due Today (<span id="count-due-today"><%= dueTodayTodos.length %></span>)</h5>
+<ul>
+    <% dueTodayTodos.forEach(function(todo) { %>
+        <li class="Todo-Item">
+            <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-green-50">
+                <input type="checkbox" class="w-4 h-4 text-blue-600 bg-green-100 rounded border-gray-300" />
+                <label class="ml-2 text-sm text-gray-600 cursor-pointer">
+                    <%= todo.title %> (Due Today)
+                </label>
+            </div>
+        </li>
+    <% }); %>
+</ul>
+
+<h5>Due Later (<span id="count-due-later"><%= dueLaterTodos.length %></span>)</h5>
+<ul>
+    <% dueLaterTodos.forEach(function(todo) { %>
+        <li class="Todo-Item">
+            <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-blue-50">
+                <input type="checkbox" class="w-4 h-4 text-blue-600 bg-green-100 rounded border-gray-300" />
+                <label class="ml-2 text-sm text-gray-600 cursor-pointer">
+                    <%= todo.title %> (Due on <%= todo.dueDate %>)
+                </label>
+            </div>
+        </li>
+    <% }); %>
+</ul>

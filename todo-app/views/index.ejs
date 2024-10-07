@@ -2,41 +2,43 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My To-Do Application</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do Manager</title>
+    <!-- Correct Tailwind CSS CDN link -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="./css/styles.css" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
 
 <body>
-    <%- include('header.ejs') %>
+    <div class="grid grid-cols-6">
+        <!-- Centering the content -->
+        <div class="col-start-3 col-span-2">
+            <!-- Include header partial correctly -->
+            <%- include('header.ejs') %>
+            <!-- To-Do Form -->
+            <form action="/todos" method="POST">
+                <div class="flex gap-2 py-4">
+                    <!-- Input for To-Do text -->
+                    <div class="flex-auto">
+                        <input type="text" name="title" placeholder="What's next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
+                    </div>
+                    <!-- Input for date -->
+                    <div class="flex-auto">
+                        <input type="date" name="dueDate" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4" required />
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="flex-none">
+                        <button type="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-medium mr-2 md-2">Add</button>
+                    </div>
+                </div>
+            </form>
 
-    <h1 class="text-center my-4">Todo List</h1>
-    
-    <!-- Table to display todos -->
-    <table class="min-w-full bg-white border border-gray-200">
-        <thead>
-            <tr class="bg-gray-200">
-                <th class="py-2 px-4 border">ID</th>
-                <th class="py-2 px-4 border">Title</th>
-                <th class="py-2 px-4 border">Due Date</th>
-                <th class="py-2 px-4 border">Completed</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% for (var i = 0; i < allTodos.length; i++) { %>
-                <tr class="hover:bg-gray-100">
-                    <td class="py-2 px-4 border"><%= allTodos[i].id %></td>
-                    <td class="py-2 px-4 border"><%= allTodos[i].title %></td>
-                    <td class="py-2 px-4 border"><%= allTodos[i].dueDate %></td>
-                    <td class="py-2 px-4 border"><%= allTodos[i].complete ? "Yes" : "No" %></td>
-                </tr>
-            <% } %>
-        </tbody>
-    </table>
-
-    <%- include('footer.ejs') %>
+            <!-- Include the todos.ejs partial to render the to-dos -->
+            <%- include('todos.ejs', { overdueTodos, dueTodayTodos, dueLaterTodos }) %>
+        </div>
+    </div>
 </body>
 
 </html>
