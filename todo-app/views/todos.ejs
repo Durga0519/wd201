@@ -1,4 +1,8 @@
-<h5>Overdue(<span id="count-overdue"><%= overdueTodos.length %></span>)</h5>
+<!-- Overdue Section -->
+<div class="flex items-center">
+    <h5 class="flex-none">Overdue</h5>
+    <span id="count-overdue" class="ml-2 text-gray-600 flex-none"><%= overdueTodos.length %></span>
+</div>
 <ul>
     <% overdueTodos.forEach(function(todo) { %>
         <li class="Todo-Item">
@@ -12,7 +16,11 @@
     <% }); %>
 </ul>
 
-<h5>Due Today(<span id="count-due-today"><%= dueTodayTodos.length %></span>)</h5>
+<!-- Due Today Section -->
+<div class="flex items-center">
+    <h5 class="flex-none">Due Today</h5>
+    <span id="count-due-today" class="ml-2 text-gray-600 flex-none"><%= dueTodayTodos.length %></span>
+</div>
 <ul>
     <% dueTodayTodos.forEach(function(todo) { %>
         <li class="Todo-Item">
@@ -26,7 +34,11 @@
     <% }); %>
 </ul>
 
-<h5>Due Later(<span id="count-due-later"><%= dueLaterTodos.length %></span>)</h5>
+<!-- Due Later Section -->
+<div class="flex items-center">
+    <h5 class="flex-none">Due Later</h5>
+    <span id="count-due-later" class="ml-2 text-gray-600 flex-none"><%= dueLaterTodos.length %></span>
+</div>
 <ul>
     <% dueLaterTodos.forEach(function(todo) { %>
         <li class="Todo-Item">
