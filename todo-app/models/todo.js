@@ -1,13 +1,9 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Op } = require("sequelize"); // Make sure to import Op
+
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    // eslint-disable-next-line no-unused-vars
+    // Helper method for defining associations.
     static associate(models) {
       // define association here
     }
@@ -16,14 +12,48 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({ title: title, dueDate: dueDate, completed: false });
     }
 
-    static getTodos(){
+    static getTodos() {
       return this.findAll();
+    }
+
+    static async overdue() {
+      return this.findAll({
+        where: {
+          dueDate: {
+            [Op.lt]: new Date(), 
+          },
+          
+        },
+      });
+    }
+
+    static async dueToday() {
+      return this.findAll({
+        where: {
+          dueDate: {
+            [Op.eq]: new Date(), // Use Op.eq for today
+          },
+          
+        },
+      });
+    }
+
+    static async dueLater() {
+      return this.findAll({
+        where: {
+          dueDate: {
+            [Op.gt]: new Date(), // Use Op.gt for future dates
+          },
+  
+        },
+      });
     }
 
     markAsCompleted() {
       return this.update({ completed: true });
     }
   }
+
   Todo.init(
     {
       title: DataTypes.STRING,
@@ -35,5 +65,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Todo",
     }
   );
+  
   return Todo;
 };

@@ -18,7 +18,7 @@ describe("Todo test suite", () => {
         server.close(); // Close server
     });
 
-    test("responds with json at /todos", async () => {
+    test("create a new todo", async () => {
         const response = await agent.post('/todos').send({
             'title': "Buy milk",
             dueDate: new Date().toISOString(),
