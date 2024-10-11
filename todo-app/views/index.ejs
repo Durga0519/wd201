@@ -26,10 +26,11 @@
             </form>
             
             <div>
-                <%- include('todos.ejs', { title: "Overdue", data: overdue }) %>
-                <%- include('todos.ejs', { title: "Due Today", data: dueToday }) %>
-                <%- include('todos.ejs', { title: "Due Later", data: dueLater }) %>
+                <%- include('todos.ejs', { title: "Overdue", id: "overdue", data: overdue, bgColor: "red-50" }) %>
+                <%- include('todos.ejs', { title: "Due Today", id: "due-today", data: dueToday, bgColor: "green-50" }) %>
+                <%- include('todos.ejs', { title: "Due Later", id: "due-later", data: dueLater, bgColor: "blue-50" }) %>
             </div>
+            
         </div>
     </div>
 </body>
