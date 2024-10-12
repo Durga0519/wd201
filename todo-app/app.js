@@ -1,11 +1,16 @@
 /* eslint-disable no-undef */
 const express = require('express');
 const app = express();
+var csrf = require("csurf");
 const bodyParser = require('body-parser');
+var cookieParser = require("cookie-parser");
 const path = require("path");
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false })); 
+app.use(cookieParser("shh! some secret string"));
+app.use(csrf({cookie: true}))
+
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -13,21 +18,24 @@ const { Todo } = require("./models");
 
 // Route for the main page
 app.get("/", async (request, response) => {
+        const overdue = await Todo.overdue();
+        const dueToday = await Todo.dueToday();
+        const dueLater = await Todo.dueLater();
     try {
-        const allTodos = await Todo.getTodos();
         if (request.accepts("html")) {
-            const overdue = await Todo.overdue();
-            const dueToday = await Todo.dueToday();
-            const dueLater = await Todo.dueLater();
             response.render("index", {
                 title: "Todo Application",
                 overdue,
                 dueToday,
                 dueLater,
-                allTodos
+                csrfToken : request.csrfToken(),
             });
         } else {
-            response.json(allTodos);
+            response.json({
+                overdue,
+                dueToday,
+                dueLater,
+            });
         }
     } catch (error) {
         console.log(error);
@@ -98,7 +106,7 @@ app.get("/todos/:id", async (request, response) => {
 app.delete("/todos/:id", async (request, response) => {
     console.log("Deleting Todo with ID:", request.params.id);
     try {
-        await Todo.destroy(request.params.id);
+        await Todo.remove(request.params.id);
         return response.json({success: true});
     } catch (error) {
         console.log(error);
