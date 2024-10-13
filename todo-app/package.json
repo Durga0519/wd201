@@ -29,7 +29,8 @@
     "express": "^4.21.0",
     "pg": "^8.13.0",
     "sequelize": "^6.37.3",
-    "sequelize-cli": "^6.6.2"
+    "sequelize-cli": "^6.6.2",
+    "tiny-csrf": "^1.1.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

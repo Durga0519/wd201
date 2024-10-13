@@ -11,35 +11,42 @@
         var token = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-        function updateTodo(id){
-            fetch(`/todos/${id}/markAsCompleted`,{
+
+        // Update todo completion status
+        function updateTodo(id, completed){
+            fetch(`/todos/${id}`, {
                 method: "put",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({
-                    "_csrf":token
+                    "_csrf": token,
+                    "completed": completed
                 })
             })
-            .then((res)=>{
-                if (res.ok){
+            .then((res) => {
+                if (res.ok) {
                     window.location.reload();
                 }
             })
-            .catch((err)=> console.error(err));
+            .catch((err) => console.error(err));
         }
+
+        // Delete a todo
         function deleteTodo(id){
-            fetch(`/todos/${id}`,{
+            fetch(`/todos/${id}`, {
                 method: "delete",
-                headers: {"Content-Type":"application/json"},
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
-                    "_csrf":token
+                    "_csrf": token
                 })  
             })
-            .then((res)=>{
-                if (res.ok){
+            .then((res) => {
+                if (res.ok) {
                     window.location.reload();
                 }
             })
-            .catch((err)=> console.error(err));
+            .catch((err) => console.error(err));
         }
     </script>
 </head>
@@ -61,13 +68,14 @@
                     </div>
                 </div>
             </form>
-            
+
+            <!-- Overdue Section -->
             <div>
                 <%- include('todos.ejs', { title: "Overdue", id: "overdue", data: overdue, bgColor: "red-50" }) %>
                 <%- include('todos.ejs', { title: "Due Today", id: "due-today", data: dueToday, bgColor: "green-50" }) %>
                 <%- include('todos.ejs', { title: "Due Later", id: "due-later", data: dueLater, bgColor: "blue-50" }) %>
+                <%- include('todos.ejs', { title: "Completed", id: "completed", data: completed, bgColor: "gray-50" }) %> <!-- New Completed Section -->
             </div>
-            
         </div>
     </div>
 </body>
