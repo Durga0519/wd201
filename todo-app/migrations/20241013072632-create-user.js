@@ -21,9 +21,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
-        validate: {
-          isEmail: true,  // Added email validation
-        },
+        // Email validation is typically done in the model definition, not in the migration.
       },
       password: {
         type: Sequelize.STRING,
@@ -37,7 +35,7 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),  // Set default value
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),  // Set default value
       }
     });
   },
